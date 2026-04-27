@@ -1,7 +1,7 @@
 import { api } from './client'
 import type { Asset, FilterState } from '../types/asset'
 
-export async function uploadAssets(files: File[]): Promise<{ uploaded: Asset[]; errors: { filename: string; error: string }[] }> {
+export async function uploadAssets(files: File[]): Promise<{ uploaded: Asset[]; errors: { filename: string; error: string }[]; warnings: { filename: string; warning: string }[] }> {
   const form = new FormData()
   files.forEach((file) => form.append('files', file))
   const { data } = await api.post('/assets/upload', form)

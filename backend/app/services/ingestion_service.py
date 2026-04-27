@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict
+from pathlib import Path
 
 from fastapi import UploadFile
 from PIL import Image
@@ -27,9 +28,10 @@ class IngestionService:
         self.region_detection_service = RegionDetectionService()
         self.layout_feature_service = LayoutFeatureService()
 
-    async def ingest_files(self, db: Session, files: list[UploadFile]) -> tuple[list[Asset], list[dict]]:
+    async def ingest_files(self, db: Session, files: list[UploadFile]) -> tuple[list[Asset], list[dict], list[dict]]:
         stored_assets: list[Asset] = []
         errors: list[dict] = []
+        warnings: list[dict] = []
 
         for file in files:
             content = await file.read()
@@ -48,7 +50,10 @@ class IngestionService:
                 db.commit()
                 db.refresh(asset)
 
-                self._extract_visual_structure(db, asset, preview_file_path)
+                extraction_warnings = self._extract_visual_structure(db, asset, preview_file_path)
+                for warning in extraction_warnings:
+                    warnings.append({"filename": file.filename, "warning": warning})
+
                 db.refresh(asset)
                 stored_assets.append(asset)
             except (UnsupportedFileError, CorruptedFileError, ValueError) as exc:
@@ -56,14 +61,23 @@ class IngestionService:
             except Exception as exc:  # noqa: BLE001
                 errors.append({"filename": file.filename, "error": f"Unexpected processing error: {exc}"})
 
-        return stored_assets, errors
+        return stored_assets, errors, warnings
 
-    def _extract_visual_structure(self, db: Session, asset: Asset, preview_file_path) -> None:
+    def _extract_visual_structure(self, db: Session, asset: Asset, preview_file_path: Path) -> list[str]:
+        warnings: list[str] = []
+
         with Image.open(preview_file_path) as preview_image:
             rgb_image = preview_image.convert("RGB")
             canvas_width, canvas_height = rgb_image.size
 
-            text_blocks = self.ocr_service.extract_text_blocks(rgb_image)
+            text_blocks = []
+            try:
+                text_blocks = self.ocr_service.extract_text_blocks(rgb_image)
+                if self.ocr_service.last_warning:
+                    warnings.append(self.ocr_service.last_warning)
+            except Exception as exc:  # noqa: BLE001
+                warnings.append(f"OCR skipped due to unexpected failure: {exc}")
+
             regions = self.region_detection_service.detect_regions(rgb_image)
 
             text_features = self.layout_feature_service.compute_for_text_blocks(text_blocks, canvas_width, canvas_height)
@@ -109,3 +123,5 @@ class IngestionService:
                 )
 
             db.commit()
+
+        return warnings

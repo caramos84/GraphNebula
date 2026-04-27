@@ -1,17 +1,8 @@
 __pycache__/
 *.pyc
-
-.venv/
 backend/.venv/
-
-app.db
-backend/app.db
 backend/assets.db
-*.db
-
 backend/storage/
-
 frontend/node_modules/
 frontend/dist/
-
 .DS_Store

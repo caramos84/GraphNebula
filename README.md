@@ -30,6 +30,7 @@ This repository contains the first vertical MVP for an internal Design Operation
   - `visual_regions`
   - `layout_features`
 - API responses now include OCR, detected regions, and layout features for each asset.
+- OCR is optional at runtime: if the Tesseract binary is unavailable, upload still succeeds and region/layout extraction continues with OCR warnings.
 
 ## Architecture
 

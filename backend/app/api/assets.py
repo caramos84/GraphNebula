@@ -13,10 +13,11 @@ ingestion_service = IngestionService()
 
 @router.post("/upload")
 async def upload_assets(files: list[UploadFile] = File(...), db: Session = Depends(get_db)):
-    assets, errors = await ingestion_service.ingest_files(db, files)
+    assets, errors, warnings = await ingestion_service.ingest_files(db, files)
     return {
         "uploaded": [AssetResponse.model_validate(asset).model_dump() for asset in assets],
         "errors": errors,
+        "warnings": warnings,
     }
 
 

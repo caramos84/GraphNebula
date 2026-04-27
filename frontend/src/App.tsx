@@ -17,6 +17,7 @@ const initialFilters: FilterState = {
 function App() {
   const [assets, setAssets] = useState<Asset[]>([])
   const [errors, setErrors] = useState<{ filename: string; error: string }[]>([])
+  const [warnings, setWarnings] = useState<{ filename: string; warning: string }[]>([])
   const [view, setView] = useState<'cards' | 'table'>('cards')
   const [filters, setFilters] = useState<FilterState>(initialFilters)
 
@@ -28,6 +29,7 @@ function App() {
   const onUpload = async (files: File[]) => {
     const result = await uploadAssets(files)
     setErrors(result.errors)
+    setWarnings(result.warnings ?? [])
     await loadAssets()
   }
 
@@ -55,6 +57,15 @@ function App() {
           <h3>Upload errors</h3>
           <ul>
             {errors.map((err, idx) => <li key={`${err.filename}-${idx}`}>{err.filename}: {err.error}</li>)}
+          </ul>
+        </section>
+      )}
+
+      {warnings.length > 0 && (
+        <section className="warnings">
+          <h3>Non-fatal warnings</h3>
+          <ul>
+            {warnings.map((warn, idx) => <li key={`${warn.filename}-${idx}`}>{warn.filename}: {warn.warning}</li>)}
           </ul>
         </section>
       )}
