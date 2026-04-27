@@ -1,49 +1,69 @@
-# GraphNebula – DesignOps Visual Analysis MVP (Sprint 1)
+# GraphNebula – DesignOps Visual Analysis MVP
 
-This repository contains the first vertical MVP for an internal Design Operations visual analysis tool.
+This repository contains the first vertical MVP for an internal Design Operations visual analysis tool, now extended with Sprint 2 layout extraction.
 
-## Sprint 1 scope implemented
+## Implemented scope
 
+### Sprint 1
 - Batch ingestion via drag-and-drop or file picker.
 - Supported formats: JPG, PNG, GIF, PDF.
-- Metadata extraction for each asset:
-  - original filename
-  - extension
-  - MIME type
-  - file size
-  - dimensions
-  - aspect ratio
-  - static/animated status
-  - page/frame count
-- Thumbnail preview generation.
-- SQLite asset catalog storage.
-- Dashboard with card and table views.
-- Filtering by file type, minimum dimensions, aspect ratio, and static/animated status.
-- Error capture for unsupported/corrupt files.
+- Metadata extraction (filename, MIME, extension, size, dimensions, aspect ratio, animated/static, frame/page count).
+- Preview generation and SQLite asset catalog.
+- Dashboard card and table views with filters.
+
+### Sprint 2
+- OCR extraction with `pytesseract`:
+  - text
+  - bounding box
+  - confidence
+- Basic visual region detection with OpenCV contours:
+  - bounding box
+  - area
+  - relative area
+- Structural feature extraction for text blocks and regions:
+  - vertical position (`top/middle/bottom`)
+  - horizontal position (`left/center/right`)
+  - area ratio
+  - text density (for OCR blocks)
+- Persistence tables:
+  - `text_blocks`
+  - `visual_regions`
+  - `layout_features`
+- API responses now include OCR, detected regions, and layout features for each asset.
 
 ## Architecture
 
 ```text
 backend/
   app/
-    api/               # FastAPI routers
-    core/              # config constants
-    db/                # SQLAlchemy DB setup
-    models/            # ORM models
-    schemas/           # Pydantic response schemas
-    services/          # ingestion, metadata, preview, storage modules
-  tests/               # metadata extraction tests
+    api/
+    core/
+    db/
+    models/
+      asset.py
+      text_block.py
+      visual_region.py
+      layout_feature.py
+    schemas/
+    services/
+      ingestion_service.py
+      metadata_extractor.py
+      preview_generator.py
+      storage_service.py
+      ocr_service.py
+      region_detection_service.py
+      layout_feature_service.py
+  tests/
 frontend/
   src/
-    api/               # HTTP client + endpoints
-    components/        # upload, filters, cards, table
-    types/             # shared UI types
+    api/
+    components/
+    types/
 ```
 
 ## Local setup
 
-### 1) Backend (FastAPI)
-
+### Backend
 ```bash
 cd backend
 python -m venv .venv
@@ -52,25 +72,21 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-Backend health: <http://localhost:8000/health>
-
-### 2) Frontend (React + Vite)
-
+### Frontend
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Frontend app: <http://localhost:5173>
-
 ## Run tests
-
 ```bash
 cd backend
 PYTHONPATH=. pytest
 ```
 
-## Notes / out of scope in Sprint 1
-
-Not implemented yet (intentionally): OCR, CV feature extraction, embeddings, clustering, heatmaps, LLM analysis.
+## Not in scope yet
+- Component classification (CTA/logo/etc.)
+- Embeddings
+- Clustering
+- Advanced ML/CV models

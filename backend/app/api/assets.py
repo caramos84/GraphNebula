@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, File, Query, UploadFile
 from sqlalchemy import and_, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.db.database import get_db
 from app.models.asset import Asset
@@ -42,7 +42,15 @@ def list_assets(
     if is_animated is not None:
         conditions.append(Asset.is_animated == is_animated)
 
-    stmt = select(Asset).order_by(Asset.id.desc())
+    stmt = (
+        select(Asset)
+        .options(
+            selectinload(Asset.text_blocks),
+            selectinload(Asset.visual_regions),
+            selectinload(Asset.layout_features),
+        )
+        .order_by(Asset.id.desc())
+    )
     if conditions:
         stmt = stmt.where(and_(*conditions))
 

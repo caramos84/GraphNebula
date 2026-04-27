@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from app.api.assets import router as assets_router
 from app.core.config import PREVIEWS_DIR
 from app.db.database import Base, engine
+from app.models import asset, layout_feature, text_block, visual_region  # noqa: F401
 
 Base.metadata.create_all(bind=engine)
 

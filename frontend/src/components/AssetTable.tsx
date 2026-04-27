@@ -16,6 +16,8 @@ export function AssetTable({ assets }: Props) {
           <th>Aspect Ratio</th>
           <th>Status</th>
           <th>Pages/Frames</th>
+          <th>Text Blocks</th>
+          <th>Regions</th>
         </tr>
       </thead>
       <tbody>
@@ -28,6 +30,8 @@ export function AssetTable({ assets }: Props) {
             <td>{asset.aspect_ratio ?? '-'}</td>
             <td>{asset.is_animated ? 'Animated' : 'Static'}</td>
             <td>{asset.page_or_frame_count ?? '-'}</td>
+            <td>{asset.text_blocks.length}</td>
+            <td>{asset.visual_regions.length}</td>
           </tr>
         ))}
       </tbody>

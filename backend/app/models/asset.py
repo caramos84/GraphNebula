@@ -1,5 +1,5 @@
 from sqlalchemy import Boolean, Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.database import Base
 
@@ -19,3 +19,7 @@ class Asset(Base):
     page_or_frame_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
     stored_path: Mapped[str] = mapped_column(String, nullable=False)
     preview_path: Mapped[str | None] = mapped_column(String, nullable=True)
+
+    text_blocks = relationship("TextBlock", cascade="all, delete-orphan", lazy="selectin")
+    visual_regions = relationship("VisualRegion", cascade="all, delete-orphan", lazy="selectin")
+    layout_features = relationship("LayoutFeature", cascade="all, delete-orphan", lazy="selectin")
