@@ -16,7 +16,7 @@ export function AssetCardGrid({ assets }: Props) {
             <p>{asset.extension.toUpperCase()} · {asset.mime_type}</p>
             <p>{asset.width ?? '-'} x {asset.height ?? '-'}</p>
             <p>{asset.is_animated ? 'Animated' : 'Static'} · {asset.page_or_frame_count ?? '-'} frame/page</p>
-            <p>{asset.text_blocks.length} text block(s) · {asset.visual_regions.length} region(s)</p>
+            <p>{asset.text_blocks.length} text blocks · {asset.visual_regions.length} regions</p>
           </div>
         </article>
       ))}
