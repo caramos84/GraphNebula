@@ -21,9 +21,9 @@ export function UploadDropzone({ onUpload }: Props) {
   return (
     <div className={`dropzone ${dragging ? 'dragging' : ''}`} onDragOver={(e) => { e.preventDefault(); setDragging(true) }} onDragLeave={() => setDragging(false)} onDrop={async (e) => { e.preventDefault(); setDragging(false); await handleFiles(e.dataTransfer.files) }}>
       <input ref={inputRef} type="file" multiple accept={acceptedTypes} hidden onChange={async (e) => handleFiles(e.target.files)} />
-      <p><strong>Drag and drop</strong> assets here or <button onClick={() => inputRef.current?.click()} className="linkButton">browse</button></p>
-      <small>Supported: JPG, PNG, GIF, PDF</small>
-      {uploading && <p>Uploading...</p>}
+      <p className="dropzoneLead">Drop files or <button onClick={() => inputRef.current?.click()} className="linkButton">browse</button></p>
+      <p className="dropzoneMeta">JPG · PNG · GIF · PDF</p>
+      {uploading && <p className="dropzoneMeta">Uploading…</p>}
     </div>
   )
 }

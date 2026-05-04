@@ -63,18 +63,21 @@ function App() {
     <main className="container">
       <h1>DesignOps Visual Asset Catalog (Sprint 1 MVP)</h1>
 
-      <section className="brandBar">
-        <select value={selectedBrandId} onChange={(e) => setSelectedBrandId(e.target.value)}>
-          <option value="">Select brand</option>
-          {brands.map((brand) => <option key={brand.id} value={brand.id}>{brand.name}</option>)}
-        </select>
-        <input placeholder="Collection name (optional)" value={collectionName} onChange={(e) => setCollectionName(e.target.value)} />
-      </section>
+      <section className="brandSpace">
+        <h3>Brand Space</h3>
+        <div className="brandGrid">
+          <select value={selectedBrandId} onChange={(e) => setSelectedBrandId(e.target.value)}>
+            <option value="">Select brand</option>
+            {brands.map((brand) => <option key={brand.id} value={brand.id}>{brand.name}</option>)}
+          </select>
+          <input placeholder="Collection title (optional)" value={collectionName} onChange={(e) => setCollectionName(e.target.value)} />
+        </div>
 
-      <section className="brandCreate">
-        <input placeholder="New brand name" value={newBrandName} onChange={(e) => setNewBrandName(e.target.value)} />
-        <input placeholder="Description (optional)" value={newBrandDesc} onChange={(e) => setNewBrandDesc(e.target.value)} />
-        <button onClick={onCreateBrand}>Create brand</button>
+        <div className="brandCreate">
+          <input placeholder="Create brand name" value={newBrandName} onChange={(e) => setNewBrandName(e.target.value)} />
+          <input placeholder="Description (optional)" value={newBrandDesc} onChange={(e) => setNewBrandDesc(e.target.value)} />
+          <button onClick={onCreateBrand}>Create brand</button>
+        </div>
       </section>
 
       <UploadDropzone onUpload={onUpload} />
