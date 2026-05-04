@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, File, Query, UploadFile
+from fastapi import APIRouter, Depends, File, Form, Query, UploadFile
 from sqlalchemy import and_, select
 from sqlalchemy.orm import Session, selectinload
 
@@ -12,12 +12,18 @@ ingestion_service = IngestionService()
 
 
 @router.post("/upload")
-async def upload_assets(files: list[UploadFile] = File(...), db: Session = Depends(get_db)):
-    assets, errors, warnings = await ingestion_service.ingest_files(db, files)
+async def upload_assets(
+    files: list[UploadFile] = File(...),
+    brand_id: int = Form(...),
+    collection_name: str | None = Form(default=None),
+    db: Session = Depends(get_db),
+):
+    assets, errors, warnings, collection = await ingestion_service.ingest_files(db, files, brand_id=brand_id, collection_name=collection_name)
     return {
         "uploaded": [AssetResponse.model_validate(asset).model_dump() for asset in assets],
         "errors": errors,
         "warnings": warnings,
+        "collection": collection,
     }
 
 

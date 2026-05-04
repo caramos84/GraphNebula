@@ -1,9 +1,11 @@
 import { api } from './client'
 import type { Asset, FilterState } from '../types/asset'
 
-export async function uploadAssets(files: File[]): Promise<{ uploaded: Asset[]; errors: { filename: string; error: string }[]; warnings: { filename: string; warning: string }[] }> {
+export async function uploadAssets(files: File[], brandId: string, collectionName?: string): Promise<{ uploaded: Asset[]; errors: { filename: string; error: string }[]; warnings: { filename: string; warning: string }[]; collection?: { id: number; brand_id: number; name: string; type: string } | null }> {
   const form = new FormData()
   files.forEach((file) => form.append('files', file))
+  form.append('brand_id', brandId)
+  if (collectionName) form.append('collection_name', collectionName)
   const { data } = await api.post('/assets/upload', form)
   return data
 }

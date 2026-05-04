@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict
+from datetime import datetime
 from pathlib import Path
 
 from fastapi import UploadFile
@@ -8,6 +9,8 @@ from PIL import Image
 from sqlalchemy.orm import Session
 
 from app.models.asset import Asset
+from app.models.brand import Brand
+from app.models.collection import Collection
 from app.models.layout_feature import LayoutFeature
 from app.models.text_block import TextBlock
 from app.models.visual_region import VisualRegion
@@ -28,10 +31,28 @@ class IngestionService:
         self.region_detection_service = RegionDetectionService()
         self.layout_feature_service = LayoutFeatureService()
 
-    async def ingest_files(self, db: Session, files: list[UploadFile]) -> tuple[list[Asset], list[dict], list[dict]]:
+    async def ingest_files(
+        self,
+        db: Session,
+        files: list[UploadFile],
+        brand_id: int,
+        collection_name: str | None = None,
+    ) -> tuple[list[Asset], list[dict], list[dict], dict | None]:
         stored_assets: list[Asset] = []
         errors: list[dict] = []
         warnings: list[dict] = []
+
+        brand = db.get(Brand, brand_id)
+        if not brand:
+            return [], [{"filename": "*", "error": f"Brand {brand_id} not found"}], [], None
+
+        normalized_name = (collection_name or "").strip()
+        if not normalized_name:
+            normalized_name = f"{brand.name} — Upload {datetime.utcnow().strftime('%Y-%m-%d %H:%M')}"
+        collection = Collection(brand_id=brand.id, name=normalized_name, type="upload")
+        db.add(collection)
+        db.commit()
+        db.refresh(collection)
 
         for file in files:
             content = await file.read()
@@ -43,6 +64,8 @@ class IngestionService:
 
                 asset = Asset(
                     **asdict(metadata),
+                    brand_id=brand.id,
+                    collection_id=collection.id,
                     stored_path=str(stored_path),
                     preview_path=f"/previews/{preview_file_path.name}",
                 )
@@ -61,7 +84,16 @@ class IngestionService:
             except Exception as exc:  # noqa: BLE001
                 errors.append({"filename": file.filename, "error": f"Unexpected processing error: {exc}"})
 
-        return stored_assets, errors, warnings
+        collection_payload = None
+        if collection is not None:
+            collection_payload = {
+                "id": collection.id,
+                "brand_id": collection.brand_id,
+                "name": collection.name,
+                "type": collection.type,
+            }
+
+        return stored_assets, errors, warnings, collection_payload
 
     def _extract_visual_structure(self, db: Session, asset: Asset, preview_file_path: Path) -> list[str]:
         warnings: list[str] = []

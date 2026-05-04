@@ -27,6 +27,8 @@ export type LayoutFeature = {
 
 export type Asset = {
   id: number
+  brand_id: number | null
+  collection_id: number | null
   original_filename: string
   extension: string
   mime_type: string

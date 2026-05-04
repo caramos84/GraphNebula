@@ -29,6 +29,8 @@ class LayoutFeatureResponse(BaseModel):
 
 
 class AssetBase(BaseModel):
+    brand_id: int | None
+    collection_id: int | None
     original_filename: str
     extension: str
     mime_type: str
