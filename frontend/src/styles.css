@@ -1,0 +1,23 @@
+:root { font-family: Inter, system-ui, Arial, sans-serif; }
+body { margin: 0; background: #f5f7fb; color: #1f2937; }
+.container { max-width: 1100px; margin: 0 auto; padding: 1.2rem; }
+.dropzone { border: 2px dashed #7c8ba1; border-radius: 12px; padding: 1.4rem; text-align: center; background: #fff; }
+.dropzone.dragging { border-color: #2563eb; background: #eff6ff; }
+.linkButton { background: none; border: none; color: #2563eb; cursor: pointer; text-decoration: underline; }
+.filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: .6rem; margin-bottom: 1rem; }
+.filters input, .filters select { padding: .5rem; border: 1px solid #d1d5db; border-radius: 8px; }
+.toolbar { display: flex; gap: .5rem; margin: 1rem 0; }
+.toolbar button { padding: .5rem .8rem; border-radius: 8px; border: 1px solid #d1d5db; background: white; }
+.cardGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: .8rem; }
+.card { background: white; border-radius: 10px; padding: .8rem; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.card img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; background: #e5e7eb; }
+.errors { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: .8rem; margin: .8rem 0; }
+table { width: 100%; border-collapse: collapse; background: white; }
+th, td { border: 1px solid #e5e7eb; padding: .5rem; text-align: left; font-size: .9rem; }
+
+.warnings { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: .8rem; margin: .8rem 0; }
+
+.brandBar, .brandCreate { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: .6rem; margin: .8rem 0; }
+.brandBar select, .brandBar input, .brandCreate input { padding: .5rem; border: 1px solid #d1d5db; border-radius: 8px; }
+.brandCreate button { padding: .5rem .8rem; border-radius: 8px; border: 1px solid #d1d5db; background: white; }
+.collectionNotice { background: #ecfeff; border: 1px solid #a5f3fc; padding: .6rem; border-radius: 8px; }
