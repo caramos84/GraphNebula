@@ -1,0 +1,53 @@
+from pydantic import BaseModel
+
+
+class TextBlockResponse(BaseModel):
+    text: str
+    x: int
+    y: int
+    width: int
+    height: int
+    confidence: float
+
+
+class VisualRegionResponse(BaseModel):
+    x: int
+    y: int
+    width: int
+    height: int
+    area: int
+    relative_area: float
+
+
+class LayoutFeatureResponse(BaseModel):
+    source_type: str
+    source_index: int
+    vertical_position: str
+    horizontal_position: str
+    area_ratio: float
+    text_density: float | None
+
+
+class AssetBase(BaseModel):
+    brand_id: int | None
+    collection_id: int | None
+    original_filename: str
+    extension: str
+    mime_type: str
+    file_size: int
+    width: int | None
+    height: int | None
+    aspect_ratio: str | None
+    is_animated: bool
+    page_or_frame_count: int | None
+    preview_path: str | None
+
+
+class AssetResponse(AssetBase):
+    id: int
+    text_blocks: list[TextBlockResponse]
+    visual_regions: list[VisualRegionResponse]
+    layout_features: list[LayoutFeatureResponse]
+
+    class Config:
+        from_attributes = True
