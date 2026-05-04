@@ -21,9 +21,9 @@ def _png_bytes() -> bytes:
 @pytest.fixture()
 def client(tmp_path):
     db_file = tmp_path / "test.db"
-    test_engine = create_engine(f"sqlite:///{db_file}", connect_args={"check_same_thread": False})
-    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
-    Base.metadata.create_all(bind=test_engine)
+    engine = create_engine(f"sqlite:///{db_file}", connect_args={"check_same_thread": False})
+    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    Base.metadata.create_all(bind=engine)
 
     def override_get_db():
         db = TestingSessionLocal()
@@ -36,7 +36,7 @@ def client(tmp_path):
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()
-    Base.metadata.drop_all(bind=test_engine)
+    Base.metadata.drop_all(bind=engine)
 
 
 def test_create_brand_and_list(client):
