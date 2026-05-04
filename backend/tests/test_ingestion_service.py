@@ -10,9 +10,10 @@ from app.services.region_detection_service import VisualRegionData
 
 
 class FakeDB:
-    def __init__(self):
+    def __init__(self, brand=None):
         self.added = []
         self.commits = 0
+        self.brand = brand
 
     def add(self, obj):
         self.added.append(obj)
@@ -23,9 +24,20 @@ class FakeDB:
     def refresh(self, _obj):
         return None
 
+    def get(self, model, pk):
+        if self.brand and model.__name__ == "Brand" and pk == self.brand.id:
+            return self.brand
+        return None
+
 
 class FakeAsset:
     id = 123
+
+
+class FakeBrand:
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
 
 
 class FakeUploadFile:
@@ -91,14 +103,17 @@ def test_ingest_files_ocr_failure_returns_warning_not_error(tmp_path):
     ingestion.storage_service.preview_path_for = lambda: preview_path
     ingestion.preview_generator.generate = lambda _ext, _content, _target: None
 
-    fake_db = FakeDB()
+    fake_db = FakeDB(brand=FakeBrand(5, "Acme"))
     upload = FakeUploadFile("sample.png", b"fake")
 
-    uploaded, errors, warnings = asyncio.run(ingestion.ingest_files(fake_db, [upload]))
+    uploaded, errors, warnings, collection = asyncio.run(
+        ingestion.ingest_files(fake_db, [upload], brand_id=5)
+    )
 
     assert len(uploaded) == 1
     assert errors == []
     assert warnings and "OCR skipped" in warnings[0]["warning"]
+    assert collection is not None
 
     regions = [obj for obj in fake_db.added if isinstance(obj, VisualRegion)]
     assert len(regions) == 1
