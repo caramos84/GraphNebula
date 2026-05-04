@@ -193,3 +193,31 @@ th { color: var(--primary); }
   text-transform: uppercase;
   color: var(--info);
 }
+
+/* OP GraphNebula — card contrast pass */
+.card {
+  background: #0A0A0A;
+  border-color: #0A0A0A;
+}
+
+.card:hover {
+  border-color: #71717A;
+}
+
+.cardMeta {
+  background: #0A0A0A;
+  color: #FAFAFA;
+  border-top: 1px solid #0A0A0A;
+}
+
+.card h4 {
+  color: #FAFAFA;
+}
+
+.card p {
+  color: #D4D4D8;
+}
+
+.card img {
+  border-bottom: 1px solid #0A0A0A;
+}
