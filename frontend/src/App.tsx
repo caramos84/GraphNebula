@@ -62,8 +62,8 @@ function App() {
   return (
     <main className="container">
       <header className="pageHeader">
-        <h1>StudioBlank Asset Archive</h1>
-        <p className="pageSubhead">Design Operations Visual Analysis</p>
+        <h1>OP GraphNebula</h1>
+        <p className="pageSubhead">Visual Analysis System</p>
       </header>
 
       <section className="brandSpace">

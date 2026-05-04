@@ -164,3 +164,32 @@ td {
 }
 
 th { color: var(--primary); }
+
+.dropzone {
+  min-height: 128px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.dropzoneIcon {
+  display: grid;
+  place-items: center;
+  margin-bottom: 0.75rem;
+  color: var(--primary);
+}
+
+.dropzoneLead {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.dropzoneMeta {
+  margin: 0.45rem 0 0;
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--info);
+}
