@@ -1,7 +1,9 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class TextBlockResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     text: str
     x: int
     y: int
@@ -11,6 +13,8 @@ class TextBlockResponse(BaseModel):
 
 
 class VisualRegionResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     x: int
     y: int
     width: int
@@ -20,6 +24,8 @@ class VisualRegionResponse(BaseModel):
 
 
 class LayoutFeatureResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     source_type: str
     source_index: int
     vertical_position: str
@@ -29,8 +35,6 @@ class LayoutFeatureResponse(BaseModel):
 
 
 class AssetBase(BaseModel):
-    brand_id: int | None
-    collection_id: int | None
     original_filename: str
     extension: str
     mime_type: str
@@ -41,13 +45,14 @@ class AssetBase(BaseModel):
     is_animated: bool
     page_or_frame_count: int | None
     preview_path: str | None
+    brand_id: int | None = None
+    collection_id: int | None = None
 
 
 class AssetResponse(AssetBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     text_blocks: list[TextBlockResponse]
     visual_regions: list[VisualRegionResponse]
     layout_features: list[LayoutFeatureResponse]
-
-    class Config:
-        from_attributes = True
