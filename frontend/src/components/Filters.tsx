@@ -7,21 +7,21 @@ type Props = {
 
 export function Filters({ filters, onChange }: Props) {
   return (
-    <div className="filters">
+    <div className="filters" aria-label="Asset filters">
       <select value={filters.fileType} onChange={(e) => onChange({ ...filters, fileType: e.target.value })}>
-        <option value="">All file types</option>
-        <option value=".jpg">JPG</option>
-        <option value=".png">PNG</option>
-        <option value=".gif">GIF</option>
-        <option value=".pdf">PDF</option>
+        <option value="">Type: All</option>
+        <option value=".jpg">Type: JPG</option>
+        <option value=".png">Type: PNG</option>
+        <option value=".gif">Type: GIF</option>
+        <option value=".pdf">Type: PDF</option>
       </select>
       <input placeholder="Min width" value={filters.minWidth} onChange={(e) => onChange({ ...filters, minWidth: e.target.value })} />
       <input placeholder="Min height" value={filters.minHeight} onChange={(e) => onChange({ ...filters, minHeight: e.target.value })} />
-      <input placeholder="Aspect ratio (e.g. 1.7778)" value={filters.aspectRatio} onChange={(e) => onChange({ ...filters, aspectRatio: e.target.value })} />
+      <input placeholder="Aspect (e.g. 1.7778)" value={filters.aspectRatio} onChange={(e) => onChange({ ...filters, aspectRatio: e.target.value })} />
       <select value={filters.animated} onChange={(e) => onChange({ ...filters, animated: e.target.value })}>
-        <option value="">Static + Animated</option>
-        <option value="static">Static</option>
-        <option value="animated">Animated</option>
+        <option value="">Motion: Any</option>
+        <option value="static">Motion: Static</option>
+        <option value="animated">Motion: Animated</option>
       </select>
     </div>
   )

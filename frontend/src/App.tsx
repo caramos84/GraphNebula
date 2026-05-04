@@ -61,26 +61,32 @@ function App() {
 
   return (
     <main className="container">
-      <h1>DesignOps Visual Asset Catalog (Sprint 1 MVP)</h1>
+      <header className="pageHeader">
+        <h1>StudioBlank Asset Archive</h1>
+        <p className="pageSubhead">Design Operations Visual Analysis</p>
+      </header>
 
-      <section className="brandBar">
-        <select value={selectedBrandId} onChange={(e) => setSelectedBrandId(e.target.value)}>
-          <option value="">Select brand</option>
-          {brands.map((brand) => <option key={brand.id} value={brand.id}>{brand.name}</option>)}
-        </select>
-        <input placeholder="Collection name (optional)" value={collectionName} onChange={(e) => setCollectionName(e.target.value)} />
-      </section>
+      <section className="brandSpace">
+        <h3>Brand Space</h3>
+        <div className="brandGrid">
+          <select value={selectedBrandId} onChange={(e) => setSelectedBrandId(e.target.value)}>
+            <option value="">Select brand</option>
+            {brands.map((brand) => <option key={brand.id} value={brand.id}>{brand.name}</option>)}
+          </select>
+          <input placeholder="Collection title (optional)" value={collectionName} onChange={(e) => setCollectionName(e.target.value)} />
+        </div>
 
-      <section className="brandCreate">
-        <input placeholder="New brand name" value={newBrandName} onChange={(e) => setNewBrandName(e.target.value)} />
-        <input placeholder="Description (optional)" value={newBrandDesc} onChange={(e) => setNewBrandDesc(e.target.value)} />
-        <button onClick={onCreateBrand}>Create brand</button>
+        <div className="brandCreate">
+          <input placeholder="Create brand name" value={newBrandName} onChange={(e) => setNewBrandName(e.target.value)} />
+          <input placeholder="Description (optional)" value={newBrandDesc} onChange={(e) => setNewBrandDesc(e.target.value)} />
+          <button onClick={onCreateBrand}>Create brand</button>
+        </div>
       </section>
 
       <UploadDropzone onUpload={onUpload} />
       {lastCollection && <p className="collectionNotice">Uploaded to collection: <strong>{lastCollection}</strong></p>}
 
-      <section><h3>Filters</h3><Filters filters={filters} onChange={setFilters} /></section>
+      <section className="filterSection"><h3>Filters</h3><Filters filters={filters} onChange={setFilters} /></section>
       <section className="toolbar"><button onClick={() => setView('cards')} disabled={view === 'cards'}>Card view</button><button onClick={() => setView('table')} disabled={view === 'table'}>Table view</button></section>
 
       {errors.length > 0 && <section className="errors"><h3>Upload errors</h3><ul>{errors.map((err, idx) => <li key={`${err.filename}-${idx}`}>{err.filename}: {err.error}</li>)}</ul></section>}
