@@ -139,10 +139,8 @@ th, td { border: 1px solid var(--border-soft); padding: .48rem .52rem; text-alig
 .detailActions { margin-bottom: .75rem; }
 .detailPlaceholders { border-top: 1px solid var(--border-soft); padding-top: .7rem; }
 
-
-.assetDetailLayout { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; align-items: start; }
-.detailPanel { border: 1px solid var(--border-soft); background: #fff; padding: .75rem; }
-
-@media (max-width: 980px) {
-  .assetDetailLayout { grid-template-columns: 1fr; }
-}
+.radarPanel { border-top: 1px solid var(--border-soft); padding-top: .7rem; margin-bottom: .8rem; }
+.radarPanel p { font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .74rem; color: var(--info); }
+.radarChart { width: 180px; height: 180px; display: block; margin-bottom: .45rem; }
+.radarGuide { fill: none; stroke: var(--border-strong); stroke-width: 1; }
+.radarShape { fill: rgba(10,10,10,0.1); stroke: var(--primary); stroke-width: 1; }
