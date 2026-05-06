@@ -106,7 +106,9 @@ def test_ingest_files_ocr_failure_returns_warning_not_error(tmp_path):
     fake_db = FakeDB(brand=FakeBrand(5, "Acme"))
     upload = FakeUploadFile("sample.png", b"fake")
 
-    uploaded, errors, warnings, collection = asyncio.run(ingestion.ingest_files(fake_db, [upload], brand_id=5))
+    uploaded, errors, warnings, collection = asyncio.run(
+        ingestion.ingest_files(fake_db, [upload], brand_id=5)
+    )
 
     assert len(uploaded) == 1
     assert errors == []
