@@ -1,5 +1,5 @@
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image
 
 import app.services.region_detection_service as region_module
 from app.services.region_detection_service import RegionDetectionService
@@ -11,6 +11,7 @@ class FakeCV2:
     THRESH_OTSU = 4
     RETR_EXTERNAL = 0
     CHAIN_APPROX_SIMPLE = 0
+    contours_to_return = []
 
     @staticmethod
     def cvtColor(img_array, _code):
@@ -26,12 +27,8 @@ class FakeCV2:
         return 0, binary
 
     @staticmethod
-    def findContours(binary, _mode, _method):
-        ys, xs = np.where(binary > 0)
-        if len(xs) == 0:
-            return [], None
-        contour = np.array([[int(xs.min()), int(ys.min())], [int(xs.max()), int(ys.max())]])
-        return [contour], None
+    def findContours(_binary, _mode, _method):
+        return FakeCV2.contours_to_return, None
 
     @staticmethod
     def boundingRect(contour):
@@ -40,18 +37,40 @@ class FakeCV2:
         return int(x0), int(y0), int(x1 - x0 + 1), int(y1 - y0 + 1)
 
 
-def test_region_detection_returns_regions(monkeypatch):
+def contour(x0, y0, x1, y1):
+    return np.array([[x0, y0], [x1, y1]])
+
+
+def test_region_detection_filters_noise_and_limits(monkeypatch):
     monkeypatch.setattr(region_module, "cv2", FakeCV2)
     service = RegionDetectionService()
 
-    image = Image.new("RGB", (200, 200), color="white")
-    draw = ImageDraw.Draw(image)
-    draw.rectangle((20, 20, 120, 120), fill="black")
+    # include tiny noise blocks and many larger ones
+    FakeCV2.contours_to_return = [contour(0, 0, 5, 5), contour(10, 10, 16, 16)] + [
+        contour(i * 12, 30, i * 12 + 20, 55) for i in range(20)
+    ]
 
+    image = Image.new("RGB", (400, 200), color="white")
+    regions = service.detect_regions(image)
+
+    assert len(regions) == 12
+    assert all(r.area > 250 for r in regions)
+
+
+def test_region_detection_merges_nearby_regions(monkeypatch):
+    monkeypatch.setattr(region_module, "cv2", FakeCV2)
+    service = RegionDetectionService()
+
+    # two nearby boxes should merge into one larger box
+    FakeCV2.contours_to_return = [
+        contour(20, 20, 80, 90),
+        contour(86, 24, 145, 94),
+    ]
+
+    image = Image.new("RGB", (300, 200), color="white")
     regions = service.detect_regions(image)
 
     assert len(regions) == 1
     assert regions[0].x <= 20
-    assert regions[0].y <= 20
-    assert regions[0].area > 5000
-    assert regions[0].relative_area > 0.1
+    assert regions[0].width >= 120
+    assert regions[0].height >= 70
