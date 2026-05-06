@@ -27,3 +27,4 @@ class Asset(Base):
     text_blocks = relationship("TextBlock", cascade="all, delete-orphan", lazy="selectin")
     visual_regions = relationship("VisualRegion", cascade="all, delete-orphan", lazy="selectin")
     layout_features = relationship("LayoutFeature", cascade="all, delete-orphan", lazy="selectin")
+    radar_metric = relationship("RadarMetric", cascade="all, delete-orphan", lazy="selectin", uselist=False)

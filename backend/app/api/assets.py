@@ -1,14 +1,17 @@
-from fastapi import APIRouter, Depends, File, Form, Query, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
 from sqlalchemy import and_, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.db.database import get_db
 from app.models.asset import Asset
 from app.schemas.asset import AssetResponse
+from app.schemas.radar_metric import RadarMetricResponse
 from app.services.ingestion_service import IngestionService
+from app.services.radar_metrics_service import RadarMetricsService
 
 router = APIRouter(prefix="/assets", tags=["assets"])
 ingestion_service = IngestionService()
+radar_metrics_service = RadarMetricsService()
 
 
 @router.post("/upload")
@@ -62,3 +65,13 @@ def list_assets(
         stmt = stmt.where(and_(*conditions))
 
     return list(db.scalars(stmt).all())
+
+
+@router.get("/{asset_id}/radar", response_model=RadarMetricResponse)
+def get_asset_radar(asset_id: int, db: Session = Depends(get_db)):
+    asset = db.get(Asset, asset_id)
+    if not asset:
+        raise HTTPException(status_code=404, detail="Asset not found")
+
+    metric = radar_metrics_service.compute_and_persist(db, asset)
+    return metric

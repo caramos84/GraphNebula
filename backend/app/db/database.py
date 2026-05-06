@@ -18,3 +18,6 @@ def get_db():
         yield db
     finally:
         db.close()
+
+# Ensure radar metric model is registered before metadata operations.
+import app.models.radar_metric  # noqa: E402,F401

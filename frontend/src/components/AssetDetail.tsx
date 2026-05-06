@@ -31,34 +31,37 @@ export function AssetDetail({ asset, onClose }: Props) {
         <button onClick={onClose}>Close</button>
       </header>
 
-      <div className="detailPreviewWrap">
-        <div className="detailPreviewCanvas" style={{ aspectRatio: `${safeWidth} / ${safeHeight}` }}>
-          {asset.preview_path && <img src={`${previewsBase}${asset.preview_path}`} alt={asset.original_filename} className="detailPreviewImage" />}
-          {showRegions && overlayRegions.map((box) => (
-            <div
-              key={box.id}
-              className="regionOverlayBox"
-              style={{ left: box.left, top: box.top, width: box.width, height: box.height }}
-            />
-          ))}
+      <div className="assetDetailLayout">
+        <div className="detailPreviewWrap">
+          <div className="detailPreviewCanvas" style={{ aspectRatio: `${safeWidth} / ${safeHeight}` }}>
+            {asset.preview_path && <img src={`${previewsBase}${asset.preview_path}`} alt={asset.original_filename} className="detailPreviewImage" />}
+            {showRegions && overlayRegions.map((box) => (
+              <div
+                key={box.id}
+                className="regionOverlayBox"
+                style={{ left: box.left, top: box.top, width: box.width, height: box.height }}
+              />
+            ))}
+          </div>
         </div>
-      </div>
 
-      <div className="detailMeta">
-        <h4>{asset.original_filename}</h4>
-        <p>{asset.mime_type} · {asset.extension.toUpperCase()} · {asset.file_size} bytes</p>
-        <p>{asset.width ?? '-'} x {asset.height ?? '-'} · aspect {asset.aspect_ratio ?? '-'}</p>
-        <p>{asset.visual_regions.length} regions · {asset.text_blocks.length} text blocks · {asset.layout_features.length} layout features</p>
-      </div>
+        <aside className="detailPanel">
+          <div className="detailMeta">
+            <h4>{asset.original_filename}</h4>
+            <p>{asset.mime_type} · {asset.extension.toUpperCase()} · {asset.file_size} bytes</p>
+            <p>{asset.width ?? '-'} x {asset.height ?? '-'} · aspect {asset.aspect_ratio ?? '-'}</p>
+            <p>{asset.visual_regions.length} regions · {asset.text_blocks.length} text blocks · {asset.layout_features.length} layout features</p>
+          </div>
 
-      <div className="detailActions">
-        <button onClick={() => setShowRegions((prev) => !prev)}>{showRegions ? 'Hide regions' : 'Show regions'}</button>
-      </div>
+          <div className="detailActions">
+            <button onClick={() => setShowRegions((prev) => !prev)}>{showRegions ? 'Hide regions' : 'Show regions'}</button>
+          </div>
 
-      <div className="detailPlaceholders">
-        <p>Language Stress Analysis — Coming next</p>
-        <p>Heatmap Estimation — Coming next</p>
-        <p>GraphRadar Metrics — Coming next</p>
+          <div className="detailPlaceholders">
+            <p>Language Stress Analysis — Coming next</p>
+            <p>Heatmap Estimation — Coming next</p>
+          </div>
+        </aside>
       </div>
     </section>
   )
